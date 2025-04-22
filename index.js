@@ -3,7 +3,16 @@ document.querySelector(".add-button").addEventListener("click", () => {
     count++;
     let forms = document.querySelectorAll(".beverage");
     let newForm = forms[forms.length - 1].cloneNode(true);
-    newForm.querySelector("h4").innerHTML = `Напиток №${count}`;
+    resetFormFields(newForm);
+
+    let newTextarea = newForm.querySelector('.user-text');
+    let newOutput = newForm.querySelector('.user-output');
+
+    newTextarea.addEventListener('input', function() {
+        const userInput = this.value;
+        newOutput.innerHTML = highlightKeywords(userInput);
+    });
+
     for (let radio of newForm.querySelectorAll("input[type=radio]")) {
         radio.name = "milk" + count;
     }
@@ -16,6 +25,14 @@ document.querySelector(".add-button").addEventListener("click", () => {
         }
     });
     forms[forms.length - 1].after(newForm);
+});
+
+document.querySelectorAll('.user-text').forEach(textarea => {
+    textarea.addEventListener('input', function() {
+        const userInput = this.value;
+        const outputElement = this.parentElement.querySelector('.user-output');
+        outputElement.innerHTML = highlightKeywords(userInput);
+    });
 });
 
 document.querySelector('.submit-button').addEventListener('click', (event) => {
@@ -32,6 +49,17 @@ function openModal() {
     const overlay = document.querySelector('.overlay');
     overlay.style.visibility = 'visible';
     document.querySelector('.status-order').textContent = updateBeverageCount();
+}
+
+function resetFormFields(form) {
+    form.querySelector("h4").innerHTML = `Напиток №${count}`;
+    form.querySelector('select').selectedIndex = 1;
+    form.querySelector('input[type="radio"][value="usual"]').checked = true;
+    form.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    form.querySelector('.user-text').value = '';
+    form.querySelector('.user-output').textContent = '';
 }
 
 function updateBeverageCount() {
@@ -59,6 +87,12 @@ let dict = {
     'coconut' : 'Кокосовое',
 }
 
+function highlightKeywords(text) {
+    const keywords = ['срочно', 'быстрее', 'побыстрее', 'скорее', 'поскорее', 'очень нужно'];
+    const regex = new RegExp(keywords.join('|'), 'gi');
+    return text.replace(regex, match => `<b>${match}</b>`);
+}
+
 function updateModalTable() {
     const beverages = [];
     const fields = document.querySelectorAll('.beverage');
@@ -70,10 +104,12 @@ function updateModalTable() {
         field.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
             extras.push(checkbox.nextElementSibling.textContent);
         });
+        const userText = field.querySelector('.user-text').value;
         beverages.push({
             beverage: dict[beverageName],
             milk: dict[milkType],
-            extras: extras.join(', ')
+            extras: extras.join(', '),
+            wishes: userText
         });
     });
 
@@ -86,6 +122,7 @@ function updateModalTable() {
             <td>${beverage.beverage}</td>
             <td>${beverage.milk}</td>
             <td>${beverage.extras}</td>
+            <td>${beverage.wishes}</td>
         `;
         modalTableBody.appendChild(row);
     });
