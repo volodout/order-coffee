@@ -8,7 +8,7 @@ document.querySelector(".add-button").addEventListener("click", () => {
     let newTextarea = newForm.querySelector('.user-text');
     let newOutput = newForm.querySelector('.user-output');
 
-    newTextarea.addEventListener('input', function() {
+    newTextarea.addEventListener('input', function () {
         const userInput = this.value;
         newOutput.innerHTML = highlightKeywords(userInput);
     });
@@ -19,7 +19,7 @@ document.querySelector(".add-button").addEventListener("click", () => {
 
     let removeButton = newForm.querySelector(".remove-button");
     removeButton.addEventListener("click", () => {
-        if(count > 1){
+        if (count > 1) {
             newForm.remove();
             count--;
         }
@@ -28,7 +28,7 @@ document.querySelector(".add-button").addEventListener("click", () => {
 });
 
 document.querySelectorAll('.user-text').forEach(textarea => {
-    textarea.addEventListener('input', function() {
+    textarea.addEventListener('input', function () {
         const userInput = this.value;
         const outputElement = this.parentElement.querySelector('.user-output');
         outputElement.innerHTML = highlightKeywords(userInput);
@@ -44,6 +44,30 @@ document.querySelector('.submit-button').addEventListener('click', (event) => {
 document.querySelector('.close-model').addEventListener('click', () => {
     closeModal();
 });
+
+document.querySelector('.confirm-button').addEventListener('click', () => {
+    const timeInput = document.querySelector('#order-time');
+    const value = timeInput.value;
+    const now = new Date();
+
+    if (!value) {
+        timeInput.classList.add('error');
+        alert('Выберите время заказа');
+        return;
+    }
+
+    const [hours, minutes] = value.split(':').map(Number);
+    const orderTime = new Date(now);
+    orderTime.setHours(hours, minutes, 0, 0);
+
+    if (orderTime <= now) {
+        timeInput.classList.add('error');
+        alert('Мы не умеем перемещаться во времени. Выберите время позже, чем текущее');
+    } else {
+        closeModal();
+    }
+});
+
 
 function openModal() {
     const overlay = document.querySelector('.overlay');
@@ -81,10 +105,10 @@ let dict = {
     'espresso': 'Эспрессо',
     'capuccino': 'Капучино',
     'cacao': 'Какао',
-    'usual' : 'Обычное',
-    'no-fat' : 'Обезжиренное',
-    'soy' : 'Соевое',
-    'coconut' : 'Кокосовое',
+    'usual': 'Обычное',
+    'no-fat': 'Обезжиренное',
+    'soy': 'Соевое',
+    'coconut': 'Кокосовое',
 }
 
 function highlightKeywords(text) {
