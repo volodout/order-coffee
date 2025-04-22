@@ -51,3 +51,49 @@
     top: 40px;
     right: 40px;
 }
+
+.overlay {
+    position: fixed;
+    box-sizing: content-box;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    visibility: hidden;
+    padding: inherit;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+    justify-content: center;
+    align-items: center;
+}
+
+.modal {
+    text-align: center;
+    box-sizing: content-box;
+    background-color: white;
+    width: 500px;
+    position: relative;
+}
+
+.close-model {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+}
+
+.modal-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.modal-table th,
+.modal-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.modal-table th {
+    background-color: #f2f2f2;
+}
